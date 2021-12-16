@@ -62,11 +62,21 @@ function pasteHandler(event) {
 		end = editor.selectionEnd;
 	}
 
+	// If the current selection is "N/A", assume we want to replace it (not wrap it in an anchor)
+	if (editor.value.slice(start, end).match(/N\/A/g)) {
+		return;
+	}
+
 	// If the current selection is also a URL, assume we want to replace it (not wrap it in an anchor)
 	if (editor.value.slice(start, end).match(/^https?:\/\/\S*$/i)) {
 		return;
 	}
 
+	// If nothing is selected, nothing happens
+	if ( start === end ) {
+		return;
+	}
+	
 	const markdownSites = [
 		'hackerone.com',
 		'github.com',
@@ -177,7 +187,9 @@ const blockedSites = [
 	'facebook.com',
 	'slack.com',
 	'twitter.com',
-	'whatsapp.com'
+	'whatsapp.com',
+	'google.com',
+	'happychat.io'
 ];
 
 if (blockedSites.some(site => document.domain.includes(site))) {
